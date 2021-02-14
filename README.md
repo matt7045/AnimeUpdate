@@ -17,6 +17,7 @@ The following steps will allow you to run a copy of this bot for yourself.
 3)Naviage to the **Bot** tab, regenerate, and copy the token.
 
 **In your local repo**
-1) Copy *credentials.config.EXAMPLE* and re-name it *credentials.config*
-2) Paste your token (as a string) into the **discord_token** field, in *credentials.config*
-3) Run *run.sh* on your system. I think you need to have Git bash installed for this to work. _**Python 3.9** was used to test, but any python 3 version should work_
+1) Copy *geckodriver.exe* into your project's working directory
+2) Copy *credentials.config.EXAMPLE* and re-name it *credentials.config*
+3) Paste your token (as a string) into the **discord_token** field, in *credentials.config*
+4) Run *run.sh* on your system. I think you need to have Git bash installed for this to work. _**Python 3.9** was used to test, but any python 3 version should work_

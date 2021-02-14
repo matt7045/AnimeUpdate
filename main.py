@@ -1,24 +1,11 @@
 import discord
-from Mimicry import Mimicry
-from twitterScraper import twitterScraper
-import random
-from time import sleep
 import json
-# This bot casts Vicious Mockery on an unfortunate soul in a discord channel.
-#  This is done by typing the command
-#
-#   !mock @nameOfPerson
-#
-#The URL for our bot is
-#
-# "https://discord.com/api/oauth2/authorize?client_id=808865476540366948&permissions=75776&scope=bot"
-#
-#Enjoy. With great power, comes great responsibility
+from CrunchyParser import CrunchyParser
+from time import sleep
 
 #Get the configuration from the config file
 with open("credentials.config", 'r') as f:
     configuration = json.load(f)
-twitter_user  = configuration['twitter_user']
 discord_token = configuration['discord_token']
 
 #First, generate a global client we can use to talk to discord
@@ -27,41 +14,49 @@ client = discord.Client()
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
-    print('Fetching Tweets from '+twitter_user+'...')
-    tweet_texts = twitterScraper.getTweetsAsString(twitter_user)
-    print('Fetched Tweets. Saving to file.')
-    with open('text_dumps/'+twitter_user+'.txt', 'w') as f:
-        f.write(tweet_texts)
-    print('Saved Tweets to file. Running application...')
-    
-    
 
 #When we receive a message...
 @client.event
 async def on_message(message):
     #Split the message into it's sections
-    message_parts = message.content.split(' ')
-    #If the message is a mock command
-    if (message_parts[0].lower() == '!wisdom'):
-        if len(message_parts)>1:
+    message_parts = message.content.lower().split(' ')
+    #Check to see if they're talking about Anime
+    if ('anime' in message_parts) or ('waifu' in message_parts):
+        await discord.add_reaction('kissing_heart')
+    #If the message is an update command
+    if (message_parts[0] == '!weeb'):
+        #Get the name of the anime, and the 'lookback' number
+        if(len(message_parts)>1):
+            lookback_included = False
+            lookback = 0
+            #If we included more than one thing, there's a possibility
+            # that extra thing at the end is the lookback. If it can
+            # be decoded as a number, assume it is. 
+            if (message_parts>2):
+                try:
+                    lookback = abs(int(message_parts[2]))
+                    lookback_included = True
+                except ValueError:
+                    lookback = 0
+            if lookback_included:
+                anime_name = message_parts[1:-1]
+            else:
+                anime_name = message_parts[1:]
+            #Get the descriptions for the most recent episodes of that anime
             try:
-                chaos = min(max(2, int(message_parts[1])),8)
-            except (ValueError, IndexError):
-                chaos = round((random.randint(3,6) + random.randint(3,6) + random.randint(3, 6))/3)
-        else:
-            chaos = int((random.randint(3,6) + random.randint(3, 6))/2)
-        #Generate a wisdom
-        length = random.randint(1,4)
-        wisdom = Mimicry.mimic('text_dumps/'+twitter_user+'.txt',length, chaos)
-        #Sent that insult to the discord channel
-        await message.channel.send('Child, here is my wisdom for you... '+wisdom)
-        print('Sent messags...\n'+wisdom+'\n\n')
+                descriptions = CrunchyParser.getShortDescriptions(anime_name)
+                description  = '|| **'+descriptions[lookback]['name']+'**\n\n'+description[lookback]['description']+' ||'
+            except:
+                description = "Hrm...I couldn't seem to find "+anime_name+'. Sorry darling OwO ;D <3'
+            await message.channel.send(description)
+            print('Sent message...\n'+description+'\n\n')
 
 
 #Run the client
 try:
     client.run(discord_token)
 except Exception as e:
+    CrunchyParser.cleanup()
     print(e)
 sleep(5)
 
