@@ -3,6 +3,11 @@ Bot that scrapes crunchyroll, and relays a summary of the most recent episode of
 ## Adding to your server
 To add to your server, go [here](https://discord.com/api/oauth2/authorize?client_id=810394677705703466&permissions=79936&scope=bot) and give it the necessary permissions. It is setup by default to portray the Dalai Lama's wisdom.
 
+## Invoking the bot
+Commands are:
+* `!owo <anime name> <n>` - For example `!owo naruto 3` returns the description for the third-most-recent episode of naruto
+* Try mentioning "anime" or "waifu" in chat and see what happens ;)
+
 ## Running for yourself
 The following steps will allow you to run a copy of this bot for yourself.
 

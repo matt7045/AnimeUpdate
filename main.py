@@ -24,7 +24,7 @@ async def on_message(message):
     if ('anime' in message.content.lower()) or ('waifu' in message.content.lower()):
         await message.add_reaction('\U0001f618')
       #If the message is an update command
-    if (message_parts[0] == '!weeb'):
+    if (message_parts[0] == '!owo'):
         #Get the name of the anime, and the 'lookback' number
         if(len(message_parts)>1):
             lookback_included = False
